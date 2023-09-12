@@ -294,13 +294,14 @@ inline std::string SparseRange::to_string() const {
 }
 
 inline void SparseRange::split(size_t expected_range_cnt) {
-    if (size() < expected_range_cnt) {
+    if (size() < expected_range_cnt && span_size() > expected_range_cnt) {
         size_t expected_size_each_range = 0;
         // 4096 + 65535 / 10 = expected_size;
         for (size_t i = 0; i < size(); ++i) {
             expected_size_each_range += _ranges[i].span_size();
         }
         expected_size_each_range /= expected_range_cnt;
+        expected_size_each_range = std::max(expected_size_each_range, 1);
         std::vector<Range> new_ranges;
         for (auto range : _ranges) {
             while (range.span_size() > expected_size_each_range) {
