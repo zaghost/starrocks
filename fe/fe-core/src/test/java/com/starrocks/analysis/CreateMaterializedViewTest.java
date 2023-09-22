@@ -42,6 +42,7 @@ import com.starrocks.scheduler.TaskManager;
 import com.starrocks.scheduler.persist.TaskRunStatus;
 import com.starrocks.server.GlobalStateMgr;
 import com.starrocks.sql.analyzer.AnalyzerUtils;
+import com.starrocks.sql.ast.AlterTableStmt;
 import com.starrocks.sql.ast.AsyncRefreshSchemeDesc;
 import com.starrocks.sql.ast.CreateMaterializedViewStatement;
 import com.starrocks.sql.ast.CreateMaterializedViewStmt;
@@ -2933,5 +2934,15 @@ public class CreateMaterializedViewTest {
         }
     }
 
+    @Test
+    public void createIndexOnMV() throws Exception {
+        String sql = "create materialized view test.test_mv_idx " +
+                "distributed by hash(k1) " +
+                "as select k1, sum(v1) as sum_v1, min(v2) from test.tbl5 group by k1;";
+        starRocksAssert.withMaterializedView(sql);
+        StatementBase stmt = UtFrameUtils.parseStmtWithNewParser("alter table test_mv_idx add index idx_name(sum_v1)",
+                starRocksAssert.getCtx());
+        GlobalStateMgr.getCurrentState().alterTable((AlterTableStmt) stmt);
+    }
 }
 
