@@ -27,6 +27,7 @@
 #include "storage/lake/types_fwd.h"
 
 namespace starrocks {
+class Cache;
 class Segment;
 class TabletSchemaPB;
 class TCreateTabletReq;
@@ -143,6 +144,8 @@ public:
     // The return value will never be null.
     Metacache* metacache() { return _metacache.get(); }
 
+    Cache* deleted_tablet_id_cache() { return _deleted_tablet_id_cache.get(); }
+
     // only for TEST purpose
     void TEST_set_global_schema_cache(int64_t index_id, TabletSchemaPtr schema);
 
@@ -166,6 +169,8 @@ private:
 
     LocationProvider* _location_provider;
     std::unique_ptr<Metacache> _metacache;
+    // cache recent deleted tablet ids
+    std::unique_ptr<Cache> _deleted_tablet_id_cache;
     std::unique_ptr<CompactionScheduler> _compaction_scheduler;
     UpdateManager* _update_mgr;
 

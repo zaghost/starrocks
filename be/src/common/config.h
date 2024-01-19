@@ -916,6 +916,7 @@ CONF_Int32(starlet_fs_read_prefetch_threadpool_size, "128");
 #endif
 
 CONF_mInt64(lake_metadata_cache_limit, /*2GB=*/"2147483648");
+CONF_mInt64(lake_deleted_tablet_id_cache_limit, "536870912"); // 512MB, around 20mi cache items
 CONF_mBool(lake_print_delete_log, "true");
 CONF_mBool(lake_compaction_check_txn_log_first, "false");
 // Used to ensure service availability in extreme situations by sacrificing a certain degree of correctness
